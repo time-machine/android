@@ -1,9 +1,8 @@
 package com.github.mobile.android;
 
 
-import android.os.Bundle;
-import android.util.Log;
 import roboguice.activity.RoboActivity;
+import android.os.Bundle;
 
 public class DashboardActivity extends RoboActivity {
     private static final String TAG = "DA";

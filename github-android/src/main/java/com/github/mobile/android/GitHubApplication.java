@@ -1,23 +1,23 @@
 package com.github.mobile.android;
 
 import static java.util.Arrays.asList;
+
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.List;
+
+import shade.org.apache.commons.logging.LogFactory;
+import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.util.Log;
 
 import com.google.inject.Module;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.List;
-
-import roboguice.application.RoboApplication;
-import shade.org.apache.commons.logging.LogFactory;
-
 /**
  * Main GitHub application
  */
-public class GitHubApplication extends RoboApplication {
+public class GitHubApplication extends Application {
 
 	private static final String TAG = "GHA";
 

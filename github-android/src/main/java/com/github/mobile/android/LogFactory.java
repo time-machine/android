@@ -6,7 +6,6 @@ import static android.util.Log.i;
 import static android.util.Log.isLoggable;
 import static android.util.Log.v;
 import static android.util.Log.w;
-
 import shade.org.apache.commons.logging.Log;
 import shade.org.apache.commons.logging.LogConfigurationException;
 

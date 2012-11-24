@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SyncResult;
 import android.os.Bundle;
 import android.util.Log;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

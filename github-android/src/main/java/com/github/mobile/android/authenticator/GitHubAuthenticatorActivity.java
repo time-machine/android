@@ -1,6 +1,17 @@
 package com.github.mobile.android.authenticator;
 
 
+import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
+import static android.text.TextUtils.isEmpty;
+import static com.github.mobile.android.authenticator.Constants.GITHUB_ACCOUNT_TYPE;
+
+import org.eclipse.egit.github.core.User;
+import org.eclipse.egit.github.core.client.GitHubClient;
+import org.eclipse.egit.github.core.service.UserService;
+
+import roboguice.activity.RoboAccountAuthenticatorActivity;
+import roboguice.inject.InjectView;
+import roboguice.util.RoboAsyncTask;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Dialog;
@@ -16,20 +27,8 @@ import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import com.github.mobile.android.R;
-import org.eclipse.egit.github.core.Repository;
-import org.eclipse.egit.github.core.User;
-import org.eclipse.egit.github.core.client.GitHubClient;
-import org.eclipse.egit.github.core.service.RepositoryService;
-import org.eclipse.egit.github.core.service.UserService;
-import roboguice.activity.RoboAccountAuthenticatorActivity;
-import roboguice.inject.InjectView;
-import roboguice.util.RoboAsyncTask;
-
-
-import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
-import static android.text.TextUtils.isEmpty;
-import static com.github.mobile.android.authenticator.Constants.GITHUB_ACCOUNT_TYPE;
 
 public class GitHubAuthenticatorActivity extends RoboAccountAuthenticatorActivity {
     public static final String PARAM_CONFIRMCREDENTIALS = "confirmCredentials";
@@ -129,7 +128,7 @@ public class GitHubAuthenticatorActivity extends RoboAccountAuthenticatorActivit
         } else {
             showProgress();
 
-            authenticationTask = new RoboAsyncTask<User>() {
+            authenticationTask = new RoboAsyncTask<User>(this) {
                 public User call() throws Exception {
                     GitHubClient client = new GitHubClient();
                     client.setCredentials(mUsername, mPassword);

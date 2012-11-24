@@ -1,11 +1,14 @@
 package com.github.mobile.android.authenticator;
 
-import android.accounts.*;
+import static com.github.mobile.android.authenticator.Constants.AUTHTOKEN_TYPE;
+import android.accounts.AbstractAccountAuthenticator;
+import android.accounts.Account;
+import android.accounts.AccountAuthenticatorResponse;
+import android.accounts.AccountManager;
+import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-import static com.github.mobile.android.authenticator.Constants.AUTHTOKEN_TYPE;
 
 class GitHubAccountAuthenticator extends AbstractAccountAuthenticator {
     private Context mContext;
