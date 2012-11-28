@@ -1,5 +1,6 @@
 package com.github.mobile.android.sync;
 
+import roboguice.inject.ContextSingleton;
 import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
@@ -9,9 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
-@Singleton
+@ContextSingleton
 class GitHubSyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String TAG = "SA";
 

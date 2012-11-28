@@ -7,6 +7,7 @@ import org.eclipse.egit.github.core.GistFile;
 import org.eclipse.egit.github.core.service.GistService;
 
 import roboguice.activity.RoboActivity;
+import roboguice.inject.ContextScopedProvider;
 import roboguice.inject.InjectView;
 import roboguice.util.RoboAsyncTask;
 import android.app.ProgressDialog;
@@ -25,7 +26,6 @@ import android.widget.Toast;
 import com.github.mobile.android.R;
 import com.github.mobile.android.TextWatcherAdapter;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 /**
  * Activity to share a text selection as a public or private Gist
@@ -46,9 +46,10 @@ public class ShareGistActivity extends RoboActivity {
 	@InjectView(R.id.createGistButton)
 	private Button createButton;
 
-	@Inject Provider<GistService> gistServiceProvider;
+	@Inject ContextScopedProvider<GistService> gistServiceProvider;
 
-	protected void onCreate(Bundle savedInstanceState) {
+	@Override
+  protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.share_gist);
 
@@ -59,14 +60,16 @@ public class ShareGistActivity extends RoboActivity {
 
 		contentText.addTextChangedListener(new TextWatcherAdapter() {
 
-			public void afterTextChanged(Editable s) {
+			@Override
+      public void afterTextChanged(Editable s) {
 				createButton.setEnabled(s.toString().length() > 0);
 			}
 		});
 
 		createButton.setOnClickListener(new OnClickListener() {
 
-			public void onClick(View v) {
+			@Override
+      public void onClick(View v) {
 				createGist();
 			}
 		});
@@ -82,7 +85,8 @@ public class ShareGistActivity extends RoboActivity {
 		progress.show();
 		new RoboAsyncTask<Gist>(this) {
 
-			public Gist call() throws Exception {
+			@Override
+      public Gist call() throws Exception {
 				Gist gist = new Gist();
 				gist.setDescription("Created from my Android device");
 				gist.setPublic(isPublic);
@@ -90,17 +94,19 @@ public class ShareGistActivity extends RoboActivity {
 				file.setContent(content);
 				file.setFilename(name);
 				gist.setFiles(Collections.singletonMap(name, file));
-				return gistServiceProvider.get().createGist(gist);
+				return gistServiceProvider.get(ShareGistActivity.this).createGist(gist);
 			}
 
-			protected void onSuccess(Gist gist) throws Exception {
+			@Override
+      protected void onSuccess(Gist gist) throws Exception {
 				progress.cancel();
 				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(gist
 						.getHtmlUrl())));
 				finish();
 			}
 
-			protected void onException(Exception e) throws RuntimeException {
+			@Override
+      protected void onException(Exception e) throws RuntimeException {
 				progress.cancel();
 				Log.e(TAG, e.getMessage(), e);
 				Toast.makeText(ShareGistActivity.this, e.getMessage(), 5000)
