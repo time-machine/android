@@ -1,18 +1,137 @@
+/*
+ * Copyright (C) 2011 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.mobile.ui.fragments;
 
+import java.util.ArrayList;
 
-//public class TabsAdapter extends FragmentPagerAdapter implements
-//    TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener {
-//  @Override
-//  public Fragment getItem(int arg0) {
-//    // TODO Auto-generated method stub
-//    return null;
-//  }
-//
-//  @Override
-//  public int getCount() {
-//    // TODO Auto-generated method stub
-//    return 0;
-//  }
-//
-//}
+import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TabHost;
+import android.widget.TabWidget;
+
+/**
+ * This is a helper class that implements the management of tabs and all
+ * details of connecting a ViewPager with associated TabHost. It relies on a
+ * trick. Normally a tab host has a simple API for supplying a View or
+ * Intent that each tab will show. This is not sufficient for switching
+ * between pages. So instead we make the content part of the tab host
+ * 0dp high (it is not shown) and the TabsAdapter supplies its own dummy
+ * view to show as the tab content. It listens to changes in tabs, and takes
+ * care of switch to the correct paged in the ViewPager whenever the selected
+ * tab changes.
+ */
+public class TabsAdapter extends FragmentPagerAdapter implements
+TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener {
+  private final Context mContext;
+  private final TabHost mTabHost;
+  private final ViewPager mViewPager;
+  private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
+
+  static final class TabInfo {
+    private final String tag;
+    private final Class<?> clss;
+    private final Bundle args;
+
+    TabInfo(final String _tag, final Class<?> _class, final Bundle _args) {
+      tag = _tag;
+      clss = _class;
+      args = _args;
+    }
+  }
+
+  static class DummyTabFactory implements TabHost.TabContentFactory {
+    private final Context mContext;
+
+    public DummyTabFactory(final Context context) {
+      mContext = context;
+    }
+
+    @Override
+    public View createTabContent(final String tag) {
+      final View v = new View(mContext);
+      v.setMinimumWidth(0);
+      v.setMinimumHeight(0);
+      return v;
+    }
+  }
+
+  public TabsAdapter(final FragmentActivity activity, final TabHost tabHost,
+      final ViewPager pager) {
+    super(activity.getSupportFragmentManager());
+    mContext = activity;
+    mTabHost = tabHost;
+    mViewPager = pager;
+    mTabHost.setOnTabChangedListener(this);
+    mViewPager.setAdapter(this);
+    mViewPager.setOnPageChangeListener(this);
+  }
+
+  public void addTab(final TabHost.TabSpec tabSpec, final Class<?> clss, final Bundle args) {
+    tabSpec.setContent(new DummyTabFactory(mContext));
+    final String tag = tabSpec.getTag();
+
+    final TabInfo info = new TabInfo(tag, clss, args);
+    mTabs.add(info);
+    mTabHost.addTab(tabSpec);
+    notifyDataSetChanged();
+  }
+
+  @Override
+  public int getCount() {
+    return mTabs.size();
+  }
+
+  @Override
+  public Fragment getItem(final int position) {
+    final TabInfo info = mTabs.get(position);
+    return Fragment.instantiate(mContext, info.clss.getName(), info.args);
+  }
+
+  @Override
+  public void onPageScrollStateChanged(final int state) {
+  }
+
+  @Override
+  public void onPageScrolled(final int position, final float positionOffset,
+      final int positionOffsetPixels) {
+  }
+
+  @Override
+  public void onPageSelected(final int position) {
+    // unfortunately when TabHost changes the current tab, it kindly
+    // also takes care of putting focus on it when not in touch mode.
+    // The jerk.
+    // This hack tries to prevent this from pulling focus out of our
+    // ViewPager.
+    final TabWidget widget = mTabHost.getTabWidget();
+    final int oldFocusability = widget.getDescendantFocusability();
+    widget.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+    mTabHost.setCurrentTab(position);
+    widget.setDescendantFocusability(oldFocusability);
+  }
+
+  @Override
+  public void onTabChanged(final String tabId) {
+    final int position = mTabHost.getCurrentTab();
+    mViewPager.setCurrentItem(position);
+  }
+}
