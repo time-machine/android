@@ -1,30 +1,65 @@
 package com.github.mobile.ui.fragments;
 
+import static com.github.mobile.android.R.layout.issue_list_item;
+import static com.madgag.android.listviews.ViewInflator.viewInflatorFor;
+
+import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.egit.github.core.Issue;
+import org.eclipse.egit.github.core.service.IssueService;
 
 import android.os.Bundle;
 import android.support.v4.content.Loader;
+import android.util.Log;
+import android.view.View;
+import android.widget.ListAdapter;
+
+import com.github.mobile.android.AsyncLoader;
+import com.github.mobile.android.views.IssueViewHolder;
+import com.google.inject.Inject;
+import com.madgag.android.listviews.ViewHolder;
+import com.madgag.android.listviews.ViewHolderFactory;
+import com.madgag.android.listviews.ViewHoldingListAdapter;
 
 public class IssuesFragment extends ListLoadingFragment<Issue> {
+  private final static String TAG = "IssueF";
 
-  @Override
-  public Loader<List<Issue>> onCreateLoader(int arg0, Bundle arg1) {
-    // TODO Auto-generated method stub
-    return null;
+  @Inject IssueService issueService;
+
+  ListAdapter adapterFor(final List<Issue> issues) {
+    return new ViewHoldingListAdapter<Issue>(issues, viewInflatorFor(
+        getActivity(), issue_list_item), new ViewHolderFactory<Issue>() {
+      @Override
+      public ViewHolder<Issue> createViewHolderFor(final View view) {
+        return new IssueViewHolder(view);
+      }
+    });
   }
 
   @Override
-  public void onLoadFinished(Loader<List<Issue>> arg0, List<Issue> arg1) {
-    // TODO Auto-generated method stub
-
+  public Loader<List<Issue>> onCreateLoader(final int i, final Bundle bundle) {
+    return new AsyncLoader<List<Issue>>(getActivity()) {
+      @Override
+      public List<Issue> loadInBackground() {
+        Log.i(TAG, "started loadInBackground");
+        try {
+          return issueService.getIssues("rtyley", "agit",
+              Collections.<String, String>emptyMap());
+        }
+        catch (final IOException e) {
+          throw new RuntimeException(e);
+        }
+      }
+    };
   }
 
   @Override
-  public void onLoaderReset(Loader<List<Issue>> arg0) {
-    // TODO Auto-generated method stub
-
+  public void onLoadFinished(final Loader<List<Issue>> arg0, final List<Issue> arg1) {
   }
 
+  @Override
+  public void onLoaderReset(final Loader<List<Issue>> arg0) {
+  }
 }
