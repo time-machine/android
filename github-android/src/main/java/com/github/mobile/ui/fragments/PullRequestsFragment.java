@@ -50,7 +50,8 @@ public class PullRequestsFragment extends ListLoadingFragment<PullRequest> {
         try {
           return pullRequestService.getPullRequests(
               RepositoryId.createFromId("rtyley/agit"), null);
-        } catch (final IOException e) {
+        }
+        catch (final IOException e) {
           throw new RuntimeException(e);
         }
       }

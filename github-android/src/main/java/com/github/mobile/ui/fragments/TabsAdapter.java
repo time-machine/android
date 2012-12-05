@@ -40,7 +40,7 @@ import android.widget.TabWidget;
  * tab changes.
  */
 public class TabsAdapter extends FragmentPagerAdapter implements
-TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener {
+    TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener {
   private final Context mContext;
   private final TabHost mTabHost;
   private final ViewPager mViewPager;

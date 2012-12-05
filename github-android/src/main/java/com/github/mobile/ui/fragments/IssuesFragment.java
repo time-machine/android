@@ -24,10 +24,11 @@ import com.madgag.android.listviews.ViewHolderFactory;
 import com.madgag.android.listviews.ViewHoldingListAdapter;
 
 public class IssuesFragment extends ListLoadingFragment<Issue> {
-  private final static String TAG = "IssueF";
+  private final static String TAG = "IssuesF";
 
   @Inject IssueService issueService;
 
+  @Override
   ListAdapter adapterFor(final List<Issue> issues) {
     return new ViewHoldingListAdapter<Issue>(issues, viewInflatorFor(
         getActivity(), issue_list_item), new ViewHolderFactory<Issue>() {
@@ -53,13 +54,5 @@ public class IssuesFragment extends ListLoadingFragment<Issue> {
         }
       }
     };
-  }
-
-  @Override
-  public void onLoadFinished(final Loader<List<Issue>> arg0, final List<Issue> arg1) {
-  }
-
-  @Override
-  public void onLoaderReset(final Loader<List<Issue>> arg0) {
   }
 }
