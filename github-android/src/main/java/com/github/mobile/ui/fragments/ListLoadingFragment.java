@@ -48,5 +48,5 @@ public abstract class ListLoadingFragment<E> extends RoboListFragment
     getLoaderManager().initLoader(0, null, this);
   }
 
-  abstract ListAdapter adapterFor(List<E> items);
+  protected abstract ListAdapter adapterFor(List<E> items);
 }
