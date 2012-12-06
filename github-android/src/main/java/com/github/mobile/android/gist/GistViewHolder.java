@@ -1,11 +1,12 @@
 package com.github.mobile.android.gist;
 
+import static com.github.mobile.android.R.id.gv_list_item_id;
+
 import org.eclipse.egit.github.core.Gist;
 
 import android.view.View;
 import android.widget.TextView;
 
-import com.github.mobile.android.R;
 import com.madgag.android.listviews.ViewHolder;
 
 public class GistViewHolder implements ViewHolder<Gist> {
@@ -17,7 +18,7 @@ public class GistViewHolder implements ViewHolder<Gist> {
    * @param v
    */
   public GistViewHolder(final View v) {
-    title = (TextView)v.findViewById(R.id.gv_list_item_id);
+    title = (TextView)v.findViewById(gv_list_item_id);
   }
 
   @Override
@@ -25,5 +26,4 @@ public class GistViewHolder implements ViewHolder<Gist> {
     final String id = gist.getId();
     title.setText(id);
   }
-
 }

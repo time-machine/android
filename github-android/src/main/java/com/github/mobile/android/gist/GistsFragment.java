@@ -31,7 +31,8 @@ public class GistsFragment extends ListLoadingFragment<Gist> {
       @Override
       public List<Gist> loadInBackground() {
         try {
-          return service.getGists(service.getClient().getUser());
+          //return service.getGists(service.getClient().getUser());
+          return service.getGists("kumabotz");
         }
         catch (final IOException e) {
           throw new RuntimeException(e);
