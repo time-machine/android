@@ -24,7 +24,6 @@ import android.os.Handler;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -64,11 +63,8 @@ public class GitHubAuthenticatorActivity extends RoboAccountAuthenticatorActivit
 
     private String mUsername;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void onCreate(Bundle icicle) {
+    public void onCreate(final Bundle icicle) {
         Log.i(TAG, "onCreate(" + icicle + ")");
         super.onCreate(icicle);
         mAccountManager = AccountManager.get(this);
@@ -79,12 +75,9 @@ public class GitHubAuthenticatorActivity extends RoboAccountAuthenticatorActivit
         mRequestNewAccount = mUsername == null;
         mConfirmCredentials = intent.getBooleanExtra(PARAM_CONFIRMCREDENTIALS, false);
 
-        Log.i(TAG, "    request new: " + mRequestNewAccount);
-        
-        requestWindowFeature(Window.FEATURE_LEFT_ICON);
+        Log.i(TAG, "request new: " + mRequestNewAccount);
+
         setContentView(R.layout.login_activity);
-        getWindow().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON,
-            android.R.drawable.ic_dialog_alert);
 
 //        mUsernameEdit.setText(mUsername);
 //        mMessage.setText(getMessage());
@@ -94,13 +87,14 @@ public class GitHubAuthenticatorActivity extends RoboAccountAuthenticatorActivit
      * {@inheritDoc}
      */
     @Override
-    protected Dialog onCreateDialog(int id) {
+    protected Dialog onCreateDialog(final int id) {
         final ProgressDialog dialog = new ProgressDialog(this);
         // dialog.setMessage(getText(R.string.ui_activity_authenticating));
         dialog.setIndeterminate(true);
         dialog.setCancelable(true);
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            public void onCancel(DialogInterface dialog) {
+            @Override
+            public void onCancel(final DialogInterface dialog) {
                 Log.i(TAG, "dialog cancel has been invoked");
                 if (authenticationTask != null) {
                     authenticationTask.cancel(true);
@@ -117,7 +111,7 @@ public class GitHubAuthenticatorActivity extends RoboAccountAuthenticatorActivit
      *
      * Specified by android:onClick="handleLogin" in the layout xml
      */
-    public void handleLogin(View view) {
+    public void handleLogin(final View view) {
         Log.d(TAG, "handleLogin hit on"+view);
         if (mRequestNewAccount) {
             mUsername = mUsernameEdit.getText().toString();
@@ -129,19 +123,21 @@ public class GitHubAuthenticatorActivity extends RoboAccountAuthenticatorActivit
             showProgress();
 
             authenticationTask = new RoboAsyncTask<User>(this) {
+                @Override
                 public User call() throws Exception {
-                    GitHubClient client = new GitHubClient();
+                    final GitHubClient client = new GitHubClient();
                     client.setCredentials(mUsername, mPassword);
 
                     return new UserService(client).getUser();
                 }
 
                 @Override
-                protected void onException(Exception e) throws RuntimeException {
+                protected void onException(final Exception e) throws RuntimeException {
                     mMessage.setText(e.getMessage());
                 }
 
-                public void onSuccess(User user) {
+                @Override
+                public void onSuccess(final User user) {
                     onAuthenticationResult(true);
                 }
 
@@ -160,7 +156,7 @@ public class GitHubAuthenticatorActivity extends RoboAccountAuthenticatorActivit
      * AccountAuthenticatorResult which is sent back to the caller.
      *
      */
-    protected void finishConfirmCredentials(boolean result) {
+    protected void finishConfirmCredentials(final boolean result) {
         Log.i(TAG, "finishConfirmCredentials()");
         final Account account = new Account(mUsername, GITHUB_ACCOUNT_TYPE);
         mAccountManager.setPassword(account, mPassword);
@@ -216,7 +212,7 @@ public class GitHubAuthenticatorActivity extends RoboAccountAuthenticatorActivit
     /**
      * Called when the authentication process completes (see attemptLogin()).
      */
-    public void onAuthenticationResult(boolean result) {
+    public void onAuthenticationResult(final boolean result) {
         Log.i(TAG, "onAuthenticationResult(" + result + ")");
         if (result) {
             if (!mConfirmCredentials) {

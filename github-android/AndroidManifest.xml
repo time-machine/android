@@ -25,7 +25,6 @@
         android:icon="@drawable/github_app_icon"
         android:label="@string/github_app_name"
         android:theme="@style/Theme.App" >
-
         <activity android:name="DashboardActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,7 +32,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".gist.ShareGistActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
@@ -60,8 +58,7 @@
         <activity
             android:name=".authenticator.GitHubAuthenticatorActivity"
             android:excludeFromRecents="true"
-            android:label="@string/ui_activity_title"
-            android:theme="@android:style/Theme.Dialog" >
+            android:label="@string/ui_activity_title" >
 
             <!--
                 No intent-filter here! This activity is only ever launched by
