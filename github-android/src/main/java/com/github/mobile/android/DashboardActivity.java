@@ -1,5 +1,6 @@
 package com.github.mobile.android;
 
+import static com.github.mobile.android.R.string.gists;
 import static com.github.mobile.android.R.string.issues;
 import static com.github.mobile.android.R.string.pull_requests;
 import roboguice.activity.RoboFragmentActivity;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.widget.TabHost;
 
+import com.github.mobile.android.gist.GistsFragment;
 import com.github.mobile.ui.fragments.IssuesFragment;
 import com.github.mobile.ui.fragments.PullRequestsFragment;
 import com.github.mobile.ui.fragments.TabsAdapter;
@@ -31,6 +33,7 @@ public class DashboardActivity extends RoboFragmentActivity {
     //addTab("news", news, CountingFragment.class);
     addTab("issues", issues, IssuesFragment.class);
     addTab("pulls", pull_requests, PullRequestsFragment.class);
+    addTab("gists", gists, GistsFragment.class);
   }
 
   private void addTab(final String tag, final int indicator, final Class<?> clazz){
