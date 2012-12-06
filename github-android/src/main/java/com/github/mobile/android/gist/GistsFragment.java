@@ -32,7 +32,7 @@ public class GistsFragment extends ListLoadingFragment<Gist> {
       public List<Gist> loadInBackground() {
         try {
           //return service.getGists(service.getClient().getUser());
-          return service.getGists("kumabotz");
+          return service.getGists("rtyley");
         }
         catch (final IOException e) {
           throw new RuntimeException(e);
